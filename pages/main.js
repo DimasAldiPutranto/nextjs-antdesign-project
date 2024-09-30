@@ -1,63 +1,45 @@
-import { useEffect, useState } from 'react';
-import { Table, Input, Button } from 'antd';
+import { Table, Input } from 'antd';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const Main = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [filteredData, setFilteredData] = useState([]);
-    const [country, setCountry] = useState('');
-    const [name, setName] = useState('');
+const Dashboard = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        fetch ('http://universities.hipolabs.com/search?country=indonesia&name=universitas')
-        .then((response) => response.json())
-        .then((data) => {
-            setData(data);
-            setFilteredData(data);
-            setLoading(false);
-        });
-    }, []);
+  useEffect(() => {
+    axios.get('http://universities.hipolabs.com/search?country=indonesia')
+      .then(response => {
+        setData(response.data);
+        setLoading(false);
+      });
+  }, []);
 
-    const handleFilter = () => {
-        const filtered = data.filter(item => 
-          item.country.toLowerCase().includes(country.toLowerCase()) &&
-          item.name.toLowerCase().includes(name.toLowerCase())
-        );
-        setFilteredData(filtered);
-      };
+  const filteredData = data.filter(university => 
+    university.name.toLowerCase().includes(search.toLowerCase())
+  );
 
-        const columns = [
-            {
-                title : 'Name',
-                dataIndex : 'name',
-                key : 'name',
-            },
-            {
-                title : 'Country',
-                dataIndex : 'country',
-                key : 'country',
-            }
-        ];
+  const columns = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Country', dataIndex: 'country', key: 'country' },
+  ];
 
-        return (
-            <div>
-                <Input placeholder = "Filter by Country"
-                value = {country}
-                onChange={(e) => setCountry(e.target.value)}
-                style={{marginBottom : '10px', width : '200px'}}
-                />
-                <Input placeholder = "Filter by Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{ marginBottom : '10px', width : '200ps' }}
-                />
-                <Button type ="primary" onClick ={handleFilter}>
-                    Filter
-                    </Button>
+  return (
+    <div style={{ padding: '20px' }}>
+      <Input
+        placeholder="Search by university name"
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        style={{ marginBottom: '20px', width: '300px' }}
+      />
+      <Table 
+        columns={columns}
+        dataSource={filteredData}
+        rowKey="name"
+        loading={loading}
+      />
+    </div>
+  );
+};
 
-                <Table columns={columns} dataSource={filteredData}/>
-            </div>
-        );
-    };
-    
-    export default Main;
+export default Dashboard;
