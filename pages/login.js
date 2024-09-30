@@ -1,40 +1,45 @@
-import { Form, Input, Button } from 'antd';
-import { useRouter } from 'next/router';
 
-const Login = () => {
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { Input, Button, Form } from 'antd';
+
+export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const onFinish = (values) => {
-
-    console.log('Success:', values);
-    router.push('/main'); 
+  const handleLogin = () => {
+    if (username === 'admin' && password === 'password') {
+      router.push('/main');
+    } else {
+      alert('Login gagal! Username atau password salah.');
+    }
   };
 
   return (
-    <Form
-      name="login_form"
-      onFinish={onFinish}
-      style={{ maxWidth: '300px', margin: '0 auto', marginTop: '100px' }}
-    >
-      <Form.Item
-        name="username"
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <Input placeholder="Username" />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[{ required: true, message: 'Please input your password!' }]}
-      >
-        <Input.Password placeholder="Password" />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit" block>
-          Login
-        </Button>
-      </Form.Item>
-    </Form>
+    <div style={{ marginTop: '50px', textAlign: 'center' }}>
+      <h2>Silahkan Login</h2>
+      <Form onFinish={handleLogin} style={{ maxWidth: '300px', margin: 'auto' }}>
+        <Form.Item label="Username">
+          <Input 
+            value={username} 
+            onChange={(e) => setUsername(e.target.value)} 
+            placeholder="Enter username"
+          />
+        </Form.Item>
+        <Form.Item label="Password">
+          <Input.Password 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            placeholder="Enter password" 
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
-};
-
-export default Login;
+}
