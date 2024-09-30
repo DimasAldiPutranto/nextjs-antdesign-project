@@ -55,9 +55,9 @@ const Main = () => {
                     Filter
                     </Button>
 
-                <Table columns={columns} data 
+                <Table columns={columns} dataSource={filteredData}/>
             </div>
-        )
-    }
+        );
+    };
     
-}
+    export default Main;
